@@ -1,6 +1,6 @@
 const { ObjectId } = require("bson")
 const mongoose = require("mongoose")
-const objectId = mongoose.Schema.Types.ObjectId
+const ObjectId = mongoose.Schema.Types.ObjectId
 const BlogsSchema = new mongoose.Schema({
 
      title:
@@ -24,7 +24,7 @@ const BlogsSchema = new mongoose.Schema({
 
       tags:
      {
-        type:String,
+        type:[String],
         required: true
      },
 
@@ -70,4 +70,4 @@ const BlogsSchema = new mongoose.Schema({
   {timestamps: true}
 )
 
-module.exports = mongoose.model("Blogss",BlogsSchema )
+module.exports = mongoose.model("Blogs",BlogsSchema )
