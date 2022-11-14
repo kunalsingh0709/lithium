@@ -34,10 +34,12 @@ const BlogsSchema = new mongoose.Schema({
        required:true
       },
 
-      subCategory:
-      {
-
-      },
+        subCategory:
+        {
+          type: [String],
+          required:true           
+            
+        },
 
       isDeleted:
       {
@@ -50,10 +52,20 @@ const BlogsSchema = new mongoose.Schema({
         typr:Boolean,
         default: false
       },
- 
+
+      deleteAt:
+      {
+         type: Date,
+         default:null
+      },
+
+      publishAt:
+      {
+         type:Date,
+         default:null
+      },
    
      },
-
 
   {timestamps: true}
 )
