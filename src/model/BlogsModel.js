@@ -1,4 +1,3 @@
-const { ObjectId } = require("bson")
 const mongoose = require("mongoose")
 const ObjectId = mongoose.Schema.Types.ObjectId
 const BlogsSchema = new mongoose.Schema({
@@ -30,7 +29,7 @@ const BlogsSchema = new mongoose.Schema({
 
       category:
       {
-       type:String,
+       type:[String],
        required:true
       },
 
@@ -51,19 +50,7 @@ const BlogsSchema = new mongoose.Schema({
       {
         typr:Boolean,
         default: false
-      },
-
-      deleteAt:
-      {
-         type: Date,
-         default:null
-      },
-
-      publishAt:
-      {
-         type:Date,
-         default:null
-      },
+      }
    
      },
 

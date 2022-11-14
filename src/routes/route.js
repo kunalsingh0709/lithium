@@ -8,7 +8,7 @@ router.get("/testme", function(req, res){
     console.log(" its working")
 })
 
-router.post("/creatAuthor",newAuthor.createNewAuthor)
+router.post("/creatAuthor",newAuthor.createauthor)
 router.post("/createBlogs",newBlogs.createNewBlogs)
 
 module.exports=router
