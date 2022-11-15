@@ -35,7 +35,7 @@ const getblogs = async function(req,res)
      }
 
      const query = req.query
-     let data = await newBlogs.find(query)
+     let data = await newBlogs.find(query).populate("authorId")
      if(!data)
      {
         res.staus(404).send({status:false,msg:"not found"})
