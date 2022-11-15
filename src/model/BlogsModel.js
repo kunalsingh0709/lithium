@@ -5,13 +5,15 @@ const BlogsSchema = new mongoose.Schema({
      title:
      {
         type:String,
-        required: true
+        required: true,
+        trim:true
      },
    
      body:
      {
         type:String,
-        required: true
+        required: true,
+        trim:true
      },
 
      authorId:
@@ -29,8 +31,9 @@ const BlogsSchema = new mongoose.Schema({
 
       category:
       {
-       type:[String],
-       required:true
+       type:String,
+       required:true,
+       trim:true
       },
 
         subCategory:

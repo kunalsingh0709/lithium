@@ -4,27 +4,33 @@ const authorSchema = new mongoose.Schema({
     firstName:
     {
         type:String,
-        required:true
+        required:true,
+        maxlength:50,
+        trim:true
     },
 
     lastName:
     {
         type:String,
-        required:true
+        required:true,
+        maxlength:25,
+        trim:true
     },
 
     title:
     {
         type:String,
         enum: ["Mr","Mrs","Miss"],
-        required:true
+        required:true,
+        trim:true
     },
 
     email:
     {
         type:String,
         required:true,
-        unique:true
+        unique:true,
+        trim:true
     },
 
      password:
