@@ -134,39 +134,30 @@ const deleteBlog = async function(req,res){
 } 
 
 const deleteByQuery = async function(req,res){
-
 try{
-    let data = req.query
-    if(Object.keys(data).length == 0)
-     return res.send({ status: false, msg: "Error!, no query found" })
-
-    // if(data.hasOwnProperty('authorId')){ 
-    //   if(!isValidObjectId(data.authorId)) 
-    //   return res.status(400).send({ status: false, msg: "Enter a valid author Id" })}
-
-  let timeStamps = new Date()
+    let data ={}
+    data = req.query
+    let authorId = data.authorId
+    data = {authorId:authorId}
     
-  let getBlogData = await newBlogs.find(data)
-  if (getBlogData.length == 0) {
-      return res.status(404).send({ status: false, msg: "No blog found" })
-    }
+    let find = await newBlogs.findOne(data)
 
-  const getNotDeletedBlog =newBlogs.filter(ele => ele.isDeleted == false)
+    if(!find)
+    return res.status(404).send({status:false,msg:"Author ID is not valid"})
 
-    if (getNotDeletedBlog.length == 0) {
-      return res.status(404).send({ status: false, msg: "The Blog is already deleted" })
-    }
+    if(find.isDeleted)
+    return res.status(400).send({status:false,msg:"This Document is deleted"})
 
-    let deletedBlogs = await newBlogs.updateMany({ $or: [{ authorId:data.authorId },
-        { category:data.category }, { tags:data.tag}, { subcategory:data.subcategory}]},
-      {$set:{isDeleted: true, isPublished: false, deletedAt: timeStamps}}
-    )
+    let savedData = await newBlogs.findOneAndUpdate(data,
+        {$set:{deletedAt:Date.now(),isDeleted:true}},
+    {new:true})
+    return res.status(200).send({status:true,msg:savedData})
+}
+catch(err){
+    return res.status(500).send({status:false,msg:err})
+}
 
-    res.status(200).send({ status: true, msg: `${deletedBlogs.modifiedCount} blogs are deleted` })
-  } 
-  catch (err) {
-    res.status(500).send({ status: false, error: err.message });
-  }
+
 }
 
 module.exports.createNewBlogs = createNewBlogs
