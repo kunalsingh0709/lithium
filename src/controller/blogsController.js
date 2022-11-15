@@ -25,5 +25,32 @@ catch(err){
 }
 }
 
+const getblogs = async function(req,res)
+{
+     try{
+    let Data = await newBlogs.find({isDeleted:false,isPublished:true})
+     if(!Data)
+     {
+        res.status(404).send({status:false,msg:"data not found"})
+     }
+
+     const query = req.query
+     let data = await newBlogs.find(query)
+     if(!data)
+     {
+        res.staus(404).send({status:false,msg:"not found"})
+     }
+      
+     res.status(200).send({status:true,msg:data})
+    }
+
+    catch(err)
+    {
+      res.staus(500).send({status:false,msg:err})
+    }
+
+}
+
 
 module.exports.createNewBlogs=createNewBlogs
+module.exports.getblogs=getblogs
