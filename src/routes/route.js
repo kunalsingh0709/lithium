@@ -11,5 +11,8 @@ router.get("/testme", function(req, res){
 router.post("/creatAuthor",newAuthor.createauthor)
 router.post("/createBlogs",newBlogs.createNewBlogs)
 router.get("/getBlogs",newBlogs.getblogs)
+router.put("/updateBlog/:blogId",newBlogs.updatedblog)
+router.delete("/deleteBlog/:blogId",newBlogs.deleteBlog)
+router.delete("/deleteByQuery",newBlogs.deleteByQuery)
 
 module.exports=router

@@ -45,13 +45,13 @@ const BlogsSchema = new mongoose.Schema({
 
       isDeleted:
       {
-        typr:Boolean,
+        type:Boolean,
         default: false
       },
 
       isPublished:
       {
-        typr:Boolean,
+        type:Boolean,
         default: false
       }
    
