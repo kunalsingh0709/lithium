@@ -160,28 +160,10 @@ const deleteByQuery = async function (req, res) {
 
 
 }
-//authentication
-// const login = async function (req, res) {
-//     try {
-//         let data = req.body
-//         let user = await newBlogs.findOne({ email: data.email, password: data.password })
-//         if (user) {
-//             let token = await jwt.sign({ _id: user._id, email: user.email }, 'project1')
-//             res.headers('x-api-key', token)
-//             return res.status(200).send({ status: true, msg: "Token generated" })
-//         }
-//         else {
-//             return res.status(401).send({ status: false, msg: "Email or password is incorrect" })
-//         }
-//     }
-//     catch (err) {
-//         return res.status(500).send({ status: false, msg: err.message })
-//     }
-// }
+
 
 module.exports.createNewBlogs = createNewBlogs
 module.exports.getblogs = getblogs
 module.exports.updatedblog = updatedblog
 module.exports.deleteBlog = deleteBlog
 module.exports.deleteByQuery = deleteByQuery
-// module.exports.login=login

@@ -47,23 +47,32 @@ const createauthor = async function(req,res){
 }
 
 //authentication
-const login = async function (req, res) {
-  try {
-    let data = req.body
-    if (Object.keys(data).length != 0) {
-      let user = await authorModel.findOne({ email: data.email, password })
-      if (user != null) {
-        let token = await jwt.sign({ _id: user._id, email: user.email }, "project1");
-        res.header("x-api-key", token)
-        res.status.send({ status: true })
-      }
-      else {
-        res.send({ status: false, msg: "Email id or password is invalid:" })
-      }
-    }
-  }
-  catch (error) {
-    res.status(500).send({ status: false, msg: error.message })
+const login = async function (req, res) { 
+  try{
+    let userName =req.body.email;
+  
+    let password =req.body.password;
+  
+    let user= await authorModel.findOne({
+      email:userName,
+      password:password
+    });
+  
+    if (!user) return res.send ({status:false,msg:"username or password is incorrect"})
+  
+    let usertoken = jwt.sign(
+  
+      {user: user._id.toString()
+  
+      },
+      "project1"
+    );
+  
+   res.send({status:true,msg:usertoken});
+  
+    
+  } catch(error){
+    return res.status(401).send({status:false,message:error.message})
   }
 }
 

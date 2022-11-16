@@ -15,5 +15,5 @@ router.get("/getBlogs",middleware.authentication,middleware.authorization,newBlo
 router.put("/updateBlog/:blogId",middleware.authentication,middleware.authorization,newBlogs.updatedblog)
 router.delete("/deleteBlog/:blogId",middleware.authentication,middleware.authorization,newBlogs.deleteBlog)
 router.delete("/deleteByQuery",middleware.authentication,middleware.authorization,newBlogs.deleteByQuery)
-router.post("/login",middleware.authentication,middleware.authorization,newAuthor.login)
+router.post("/login",newAuthor.login)
 module.exports=router
