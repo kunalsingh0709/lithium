@@ -2,6 +2,7 @@ const newBlogs = require("../model/BlogsModel")
 const author = require("../model/authorModel")
 const { createauthor } = require("./authorController")
 const { now } = require("mongoose")
+const { JsonWebTokenError } = require("jsonwebtoken")
 
 const createNewBlogs = async function (req, res) {
     try {
@@ -105,63 +106,82 @@ const updatedblog = async function (req, res) {
     }
 }
 
-const deleteBlog = async function(req,res){
-    try{
+const deleteBlog = async function (req, res) {
+    try {
         let id = req.params.blogId
 
-        if(!id){
-            return res.status(404).send({status:false,msg:"ID not found"})
+        if (!id) {
+            return res.status(404).send({ status: false, msg: "ID not found" })
         }
 
-        let blogId = await newBlogs.findById({_id:  id})
-        if(!blogId){
-            return res.status(403).send({status:false,msg:"Not a valid blog id"})
+        let blogId = await newBlogs.findById({ _id: id })
+        if (!blogId) {
+            return res.status(403).send({ status: false, msg: "Not a valid blog id" })
         }
-        if(blogId.isDeleted){
-            return res.status(404).send({status:false,msg:"Blog already deleted"})
+        if (blogId.isDeleted) {
+            return res.status(404).send({ status: false, msg: "Blog already deleted" })
         }
-        else{
-            let deletes = await newBlogs.findOneAndUpdate({_id:id},
-                {$set:{isDeleted:true},deletedAt:Date.now()},
-            {new:true})
-            return res.status(200).send({status:true,msg:deletes})
+        else {
+            let deletes = await newBlogs.findOneAndUpdate({ _id: id },
+                { $set: { isDeleted: true }, deletedAt: Date.now() },
+                { new: true })
+            return res.status(200).send({ status: true, msg: deletes })
         }
     }
-    catch(err){
-        return res.status(500).send({status:false,msg:err})
+    catch (err) {
+        return res.status(500).send({ status: false, msg: err })
     }
 
-} 
-
-const deleteByQuery = async function(req,res){
-try{
-    let data ={}
-    data = req.query
-    let authorId = data.authorId
-    data = {authorId:authorId}
-    
-    let find = await newBlogs.findOne(data)
-
-    if(!find)
-    return res.status(404).send({status:false,msg:"Author ID is not valid"})
-
-    if(find.isDeleted)
-    return res.status(400).send({status:false,msg:"This Document is deleted"})
-
-    let savedData = await newBlogs.findOneAndUpdate(data,
-        {$set:{deletedAt:Date.now(),isDeleted:true}},
-    {new:true})
-    return res.status(200).send({status:true,msg:savedData})
-}
-catch(err){
-    return res.status(500).send({status:false,msg:err})
 }
 
+const deleteByQuery = async function (req, res) {
+    try {
+        let data = {}
+        data = req.query
+        let authorId = data.authorId
+        data = { authorId: authorId }
+
+        let find = await newBlogs.findOne(data)
+
+        if (!find)
+            return res.status(404).send({ status: false, msg: "Author ID is not valid" })
+
+        if (find.isDeleted)
+            return res.status(400).send({ status: false, msg: "This Document is deleted" })
+
+        let savedData = await newBlogs.findOneAndUpdate(data,
+            { $set: { deletedAt: Date.now(), isDeleted: true } },
+            { new: true })
+        return res.status(200).send({ status: true, msg: savedData })
+    }
+    catch (err) {
+        return res.status(500).send({ status: false, msg: err })
+    }
+
 
 }
+//authentication
+// const login = async function (req, res) {
+//     try {
+//         let data = req.body
+//         let user = await newBlogs.findOne({ email: data.email, password: data.password })
+//         if (user) {
+//             let token = await jwt.sign({ _id: user._id, email: user.email }, 'project1')
+//             res.headers('x-api-key', token)
+//             return res.status(200).send({ status: true, msg: "Token generated" })
+//         }
+//         else {
+//             return res.status(401).send({ status: false, msg: "Email or password is incorrect" })
+//         }
+//     }
+//     catch (err) {
+//         return res.status(500).send({ status: false, msg: err.message })
+//     }
+// }
 
 module.exports.createNewBlogs = createNewBlogs
 module.exports.getblogs = getblogs
 module.exports.updatedblog = updatedblog
-module.exports.deleteBlog=deleteBlog
+module.exports.deleteBlog = deleteBlog
 module.exports.deleteByQuery = deleteByQuery
+// module.exports.login=login

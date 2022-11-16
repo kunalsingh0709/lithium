@@ -1,8 +1,8 @@
 const author = require("../model/authorModel")
 const jwt =require('jsonwebtoken')
 const authorModel = require("../model/authorModel")
-const emailMatch = /^[a-zA-Z0-9+_.-]+@[a-zA-Z0-9.-]+$/
-const matchPass = /^(?=.*[0-9])(?=.*[!@#$%^&#])[a-zA-Z0-9!@#$%^&*]{8,18}$/     
+const emailMatch = /^[a-zA-Z0-9+_.-]+@[a-zA-Z0-9.-]+$/  //regedx for the checking the email id
+const matchPass = /^(?=.*[0-9])(?=.*[!@#$%^&#])[a-zA-Z0-9!@#$%^&*]{8,18}$/     //regrex for checking the password
 
 
 const createauthor = async function(req,res){
@@ -46,4 +46,27 @@ const createauthor = async function(req,res){
 
 }
 
+//authentication
+const login = async function (req, res) {
+  try {
+    let data = req.body
+    if (Object.keys(data).length != 0) {
+      let user = await authorModel.findOne({ email: data.email, password })
+      if (user != null) {
+        let token = await jwt.sign({ _id: user._id, email: user.email }, "project1");
+        res.header("x-api-key", token)
+        res.status.send({ status: true })
+      }
+      else {
+        res.send({ status: false, msg: "Email id or password is invalid:" })
+      }
+    }
+  }
+  catch (error) {
+    res.status(500).send({ status: false, msg: error.message })
+  }
+}
+
+
 module.exports.createauthor=createauthor
+module.exports.login=login
