@@ -5,9 +5,7 @@ const newAuthor = require("../controller/authorController")
 const newBlogs = require("../controller/blogsController")
 const middleware = require("../middleware/auth")
 
-router.get("/testme", function(req, res){
-    console.log(" its working")
-})
+//router is the function of express lib
 
 router.post("/creatAuthor",newAuthor.createauthor)
 router.post("/createBlogs",newBlogs.createNewBlogs)
@@ -17,3 +15,9 @@ router.delete("/deleteBlog/:blogId",middleware.authentication,middleware.authori
 router.delete("/deleteByQuery",middleware.authentication,middleware.authorization,newBlogs.deleteByQuery)
 router.post("/login",newAuthor.login)
 module.exports=router
+
+//collection of function is module
+//collection of module is package
+//collection pf package is library
+//collection of library is framework
+//collection of framework is npm

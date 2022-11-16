@@ -43,7 +43,7 @@ const getblogs = async function (req, res) {
     }
 
     catch (err) {
-        res.staus(500).send({ status: false, msg: err })
+        res.status(500).send({ status: false, msg: err })
     }
 
 }

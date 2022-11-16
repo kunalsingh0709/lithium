@@ -58,17 +58,17 @@ const login = async function (req, res) {
       password:password
     });
   
-    if (!user) return res.send ({status:false,msg:"username or password is incorrect"})
+    if (!user) return res.send ({status:false,msg:"Email-ID or password is incorrect"})
   
     let usertoken = jwt.sign(
   
-      {user: user._id.toString()
+      {user: user._id.toString()   //to take the plain text while using toString in jwt
   
       },
       "project1"
     );
   
-   res.send({status:true,msg:usertoken});
+   res.status(200).send({status:true,msg:usertoken});
   
     
   } catch(error){
