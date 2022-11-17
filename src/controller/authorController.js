@@ -3,7 +3,7 @@ const jwt =require('jsonwebtoken')
 const authorModel = require("../model/authorModel")
 const emailMatch = /^[a-zA-Z0-9+_.-]+@[a-zA-Z0-9.-]+$/  //regedx for the checking the email id
 const matchPass = /^(?=.*[0-9])(?=.*[!@#$%^&#])[a-zA-Z0-9!@#$%^&*]{8,18}$/     //regrex for checking the password
-
+const checkName= /^[a-zA-Z]+$/
 
 const createauthor = async function(req,res){
   try{
@@ -14,9 +14,13 @@ const createauthor = async function(req,res){
 
     if(!firstName || firstName =="")
     return res.status(400).send({status:false,msg:"Please enter first name"})
+    if(!checkName.test(firstName))
+    return res.status(400).send({status:false,msg:"Please use Valid First Name"})
 
     if(!lastName || lastName =="")
     return res.status(400).send({status:false,msg:"Please enter Last name"})
+    if(!checkName.test(lastName))
+    return res.status(400).send({status:false,msg:"Please use Last Name"})
 
     if(!title || title =="")
     return res.status(400).send({status:false,msg:"Please use Title"})
@@ -37,7 +41,7 @@ const createauthor = async function(req,res){
     return res.status(400).send({status:false,msg:"Please use special character to make strong password"})
 
    let saveData = await author.create(data)
-  res.status(200).send({msg:saveData})
+  res.status(200).send({status:true,msg:saveData})
   }
   catch(err){
     return res.status(500).send({status: false,msg:err})
@@ -50,8 +54,13 @@ const createauthor = async function(req,res){
 const login = async function (req, res) { 
   try{
     let userName =req.body.email;
+    if (!userName || userName == "")
+            return res.status(400).send({ status: false, msg: "Please enter Email-ID" })
   
     let password =req.body.password;
+    if (!password || password == "")
+    return res.status(400).send({ status: false, msg: "Please enter password" })
+
   
     let user= await authorModel.findOne({
       email:userName,

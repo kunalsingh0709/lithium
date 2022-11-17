@@ -7,13 +7,13 @@ const authentication = function (req, res, next) {
         let token = req.headers["x-api-key"];
         console.log(token)
 
-        if (!token) return res.status(400).send({ status: false, msg: "token must be present" });
+        if (!token) return res.status(403).send({ status: false, msg: "Token must be present" });
 
         let decodedToken = jwt.verify(token, "project1");
         console.log(decodedToken)
 
         req.decodedToken = decodedToken
-        if (!decodedToken) return res.status(400).send({ status: false, msg: "token is invalid" });
+        if (!decodedToken) return res.status(400).send({ status: false, msg: "Token is invalid" });
         else {
 
             next()
@@ -21,7 +21,7 @@ const authentication = function (req, res, next) {
     }
 
     catch (err) {
-        res.status(500).send({ msg: err.message })
+        res.status(500).send({ status:false,msg: err.message })
     }
 }
 
@@ -33,12 +33,14 @@ const  authorization = async function (req, res, next) {
         console.log(req.params)
         
         let data=await BlogsModel.findById(blogId)
-        if (!data)return res.send({msg:"data not found "})
+        if (!data)
+        return res.status(404).send({msg:"Data not found "})
        let autherd= data.authorId.toString()
        console.log(autherd)
     
 
-        if (req.decodedToken.user !== autherd) return res.status(400).send({ status: false, msg: "you do not have authorization to this " });
+        if (req.decodedToken.user !== autherd)
+         return res.status(400).send({ status: false, msg: "you do not have authorization to this " });
         else {
             next()
         }
