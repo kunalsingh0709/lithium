@@ -15,8 +15,15 @@ const createNewBlogs = async function (req, res) {
         else if (!checkAuthorId) {
             return res.status(403).send({ status: false, msg: "Please enter a valid authorId" })
         }
+        
         else {
             let blogger = await newBlogs.create(data)
+            if (data["isPublished"] == true) {
+                data["publishedAt"] = Date.now();
+            };
+            if (data["isDeleted"] == true) {
+              data["deletedAt"] = Date.now();
+          };
             return res.status(200).send({ status: true, msg: blogger })
         }
 
@@ -123,7 +130,7 @@ const deleteBlog = async function (req, res) {
         }
         else {
             let deletes = await newBlogs.findOneAndUpdate({ _id: id },
-                { $set: { isDeleted: true }, deletedAt: Date.now() },
+                { $set: { isDeleted: true }, deletedAt: new Date() },
                 { new: true })
             return res.status(200).send({ status: true, msg: deletes })
         }
@@ -135,31 +142,47 @@ const deleteBlog = async function (req, res) {
 }
 
 const deleteByQuery = async function (req, res) {
-    try {
-        let data = {}
-        data = req.query
-        let authorId = data.authorId
-        data = { authorId: authorId }
+  try{
 
-        let find = await newBlogs.findOne(data)
+      let data = req.query
+      let decodedToken = req.decodedToken
+      data.authorId = decodedToken.user
+      console.log(data)
+      let blogs = await newBlogs.find(data)
+      console.log(blogs)
+       if(!blogs)
+       {
+         res.status(400).send({status:false, msg:"no blog found"})
+       }
 
-        if (!find)
-            return res.status(404).send({ status: false, msg: "Author ID is not valid" })
+       let deleteBlogs = await newBlogs. updateMany({ $or: [{ authorId: data.authorId }, { category: data.category }, { tags: data.tag },{title: data.title}, { subcategory: data.subcategory }, { isPublished: data.isPublished }] },
+        { $set: { isDeleted: true, isPublished: false, deletedAt: Date.now() } })
+        res.send({status:true, msg:deleteBlogs.modifiedCount})
 
-        if (find.isDeleted)
-            return res.status(400).send({ status: false, msg: "This Document is deleted" })
+//         let data = req.query
+//         let authorId = data.authorId
+//         data = { authorId: authorId }
 
-        let savedData = await newBlogs.findOneAndUpdate(data,
-            { $set: { deletedAt: Date.now(), isDeleted: true } },
-            { new: true })
-        return res.status(200).send({ status: true, msg: savedData })
-    }
+//         let find = await newBlogs.findOne(data)
+
+//         if (!find)
+//             return res.status(404).send({ status: false, msg: "Author ID is not valid" })
+
+//         if (find.isDeleted)
+//             return res.status(400).send({ status: false, msg: "This Document is deleted" })
+
+//         let savedData = await newBlogs.findOneAndUpdate(data,
+//             { $set: { deletedAt: Date.now(), isDeleted: true } },
+//             { new: true })
+//         return res.status(200).send({ status: true, msg: savedData })
+  }
     catch (err) {
-        return res.status(500).send({ status: false, msg: err })
+        return res.status(500).send({ status: false, msg: "server errer" })
     }
-
-
 }
+
+
+
 
 
 module.exports.createNewBlogs = createNewBlogs
