@@ -41,7 +41,7 @@ const createauthor = async function(req,res){
     return res.status(400).send({status:false,msg:"Please use special character to make strong password"})
 
    let saveData = await author.create(data)
-  res.status(200).send({status:true,msg:saveData})
+  res.status(201).send({status:true,msg:saveData})
   }
   catch(err){
     return res.status(500).send({status: false,msg:err})
@@ -67,7 +67,8 @@ const login = async function (req, res) {
       password:password
     });
   
-    if (!user) return res.send ({status:false,msg:"Email-ID or password is incorrect"})
+    if (!user) 
+    return res.send ({status:false,msg:"Email-ID or password is incorrect"})
   
     let usertoken = jwt.sign(
   

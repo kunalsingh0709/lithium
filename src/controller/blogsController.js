@@ -50,27 +50,35 @@ const createNewBlogs = async function (req, res) {
     }
 }
 
+
+
+
+
+
 const getblogs = async function (req, res) {
     try {
-        let Data = await newBlogs.find({ isDeleted: false, isPublished: true })
-        if (!Data) {
-            res.status(404).send({ status: false, msg: "data not found" })
+        let data = req.query
+        data.isDeleted = false
+        data.isPublished = true
+        let Id = req.query.authorId
+    
+        if (!Id) {
+          let result = await newBlogs.find(data).populate('authorId')
+          if (result.length < 1) { res.status(404).send({ status: false, msg: "No blog found" }) }
+          else { res.status(200).send({ status: true, msg: result }) }
         }
-
-        const query = req.query
-        let data = await newBlogs.find(query).populate("authorId")
-        if (!data) {
-            res.staus(404).send({ status: false, msg: "not found" })
+        else {
+          if (!isValidObjectId(Id)) { return res.status(400).send({ status: false, msg: "author id is not valid" }) }
+          let result = await newBlogs.find(data).populate('authorId')
+          if (result.length == 0) { res.status(404).send({ status: false, msg: "no blog found" }) }
+          else { res.status(200).send({ status: true, msg: result }) }
         }
-
-        res.status(200).send({ status: true, msg: data })
+      }
+    
+      catch (err) {
+        res.status(500).send({ status: false, msg: err.message })
+      }
     }
-
-    catch (err) {
-        res.status(500).send({ status: false, msg: err })
-    }
-
-}
 
 const updatedblog = async function (req, res) {
     try {
@@ -99,7 +107,7 @@ const updatedblog = async function (req, res) {
         let updateId = await newBlogs.findOne({ _id: getId })
         if (updateId) {
             if (updateId.isDeleted) {
-                return res.send("Can't Updated,It's is Deleted")
+                return res.status(400).send("Can't Updated,It's is Deleted")
 
             }
             else {
